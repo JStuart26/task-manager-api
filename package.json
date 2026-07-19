@@ -1,0 +1,13 @@
+{
+  "name": "task-manager-api",
+  "version": "1.0.0",
+  "description": "A beginner Express API for learning CRUD routes",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.0.0"
+  }
+}
+
