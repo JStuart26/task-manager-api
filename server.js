@@ -15,82 +15,112 @@ app.get("/", (request, response) => {
 });
 
 app.get("/tasks", async (request, response) => {
-  const result = await pool.query("SELECT * FROM tasks ORDER BY id ASC");
-  response.json(result.rows);
+  try {
+    const result = await pool.query("SELECT * FROM tasks ORDER BY id ASC");
+    response.json(result.rows);
+  } catch (error) {
+    response.status(500).json({
+      error: "Failed to fetch tasks"
+    });
+  }
 });
 
 app.get("/tasks/:id", async (request, response) => {
-  const taskId = Number(request.params.id);
+  try {
+    const taskId = Number(request.params.id);
 
-  const result = await pool.query(
-    "SELECT * FROM tasks WHERE id = $1",
-    [taskId]
-  );
+    const result = await pool.query(
+      "SELECT * FROM tasks WHERE id = $1",
+      [taskId]
+    );
 
-  const task = result.rows[0];
+    const task = result.rows[0];
 
-  if (!task) {
-    return response.status(404).json({
-      error: "Task not found"
+    if (!task) {
+      return response.status(404).json({
+        error: "Task not found"
+      });
+    }
+
+    response.json(task);
+  } catch (error) {
+    response.status(500).json({
+      error: "Failed to fetch task"
     });
   }
-
-  response.json(task);
 });
 
 app.post("/tasks", async (request, response) => {
-  const result = await pool.query(
-    "INSERT INTO tasks (title, completed) VALUES ($1, false) RETURNING *",
-    [request.body.title]
-  );
+  try {
+    const result = await pool.query(
+      "INSERT INTO tasks (title, completed) VALUES ($1, false) RETURNING *",
+      [request.body.title]
+    );
 
-  response.status(201).json(result.rows[0]);
+    response.status(201).json(result.rows[0]);
+  } catch (error) {
+    response.status(500).json({
+      error: "Failed to create task"
+    });
+  }
 });
 
 app.put("/tasks/:id", async (request, response) => {
-  const taskId = Number(request.params.id);
+  try {
+    const taskId = Number(request.params.id);
 
-  const result = await pool.query(
-    `UPDATE tasks
-     SET
-       title = COALESCE($1, title),
-       completed = COALESCE($2, completed)
-     WHERE id = $3
-     RETURNING *`,
-    [request.body.title, request.body.completed, taskId]
-  );
+    const result = await pool.query(
+      `UPDATE tasks
+       SET
+         title = COALESCE($1, title),
+         completed = COALESCE($2, completed)
+       WHERE id = $3
+       RETURNING *`,
+      [request.body.title, request.body.completed, taskId]
+    );
 
-  const task = result.rows[0];
+    const task = result.rows[0];
 
-  if (!task) {
-    return response.status(404).json({
-      error: "Task not found"
+    if (!task) {
+      return response.status(404).json({
+        error: "Task not found"
+      });
+    }
+
+    response.json(task);
+  } catch (error) {
+    response.status(500).json({
+      error: "Failed to update task"
     });
   }
-
-  response.json(task);
 });
 
 app.delete("/tasks/:id", async (request, response) => {
-  const taskId = Number(request.params.id);
+  try {
+    const taskId = Number(request.params.id);
 
-  const result = await pool.query(
-    "DELETE FROM tasks WHERE id = $1 RETURNING *",
-    [taskId]
-  );
+    const result = await pool.query(
+      "DELETE FROM tasks WHERE id = $1 RETURNING *",
+      [taskId]
+    );
 
-  const task = result.rows[0];
+    const task = result.rows[0];
 
-  if (!task) {
-    return response.status(404).json({
-      error: "Task not found"
+    if (!task) {
+      return response.status(404).json({
+        error: "Task not found"
+      });
+    }
+
+    response.json({
+      message: "Task deleted",
+      task: task
+    });
+  } catch (error) {
+    response.status(500).json({
+      error: "Failed to delete task"
     });
   }
-
-  response.json({
-    message: "Task deleted",
-    task: task
-  });
 });
 
 app.listen(PORT, "0.0.0.0", () => {
