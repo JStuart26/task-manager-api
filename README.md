@@ -19,3 +19,18 @@ Create
 Read
 Update
 Delete
+
+## Routes
+
+| Method | Route | What it does |
+|---|---|---|
+| GET | `/tasks` | Shows all tasks |
+| GET | `/tasks/:id` | Shows one task by ID |
+| POST | `/tasks` | Creates a new task |
+| PUT | `/tasks/:id` | Updates a task |
+| DELETE | `/tasks/:id` | Deletes a task |
+
+## Install
+
+```bash
+npm install
