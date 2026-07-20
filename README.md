@@ -44,3 +44,11 @@ The API connects to PostgreSQL using the `pg` package and this Docker Compose en
 
 ```text
 DATABASE_URL=postgres://task_user:task_password@db:5432/task_manager
+
+## Health Check
+
+This route checks whether the API is running and whether PostgreSQL is connected.
+
+```bash
+curl http://localhost:3001/health
+
