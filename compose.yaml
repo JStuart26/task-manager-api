@@ -1,0 +1,7 @@
+services:
+  api:
+    build: .
+    container_name: task-manager-api
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
