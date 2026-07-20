@@ -52,6 +52,12 @@ app.get("/tasks/:id", async (request, response) => {
 
 app.post("/tasks", async (request, response) => {
   try {
+     if (!request.body.title || request.body.title.trim() === "") {
+      return response.status(400).json({
+        error: "Task title is required"
+      });
+    }
+
     const result = await pool.query(
       "INSERT INTO tasks (title, completed) VALUES ($1, false) RETURNING *",
       [request.body.title]
@@ -68,6 +74,15 @@ app.post("/tasks", async (request, response) => {
 app.put("/tasks/:id", async (request, response) => {
   try {
     const taskId = Number(request.params.id);
+
+    if (
+      request.body.title !== undefined &&
+      request.body.title.trim() === ""
+    ) {
+      return response.status(400).json({
+        error: "Task title cannot be empty"
+      });
+    }
 
     const result = await pool.query(
       `UPDATE tasks
