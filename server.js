@@ -14,6 +14,24 @@ app.get("/", (request, response) => {
   response.send("Task Manager API is running");
 });
 
+app.get("/health", async (request, response) => {
+  try {
+    await pool.query("SELECT 1");
+
+    response.json({
+      status: "ok",
+      api: "running",
+      database: "connected"
+    });
+  } catch (error) {
+    response.status(500).json({
+      status: "error",
+      api: "running",
+      database: "disconnected"
+    });
+  }
+});
+
 app.get("/tasks", async (request, response) => {
   try {
     const result = await pool.query("SELECT * FROM tasks ORDER BY id ASC");
