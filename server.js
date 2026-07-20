@@ -1,35 +1,33 @@
 const express = require("express");
+const { Pool } = require("pg");
 
 const app = express();
 const PORT = 3001;
 
-app.use(express.json());
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL
+});
 
-const tasks = [
-  {
-    id: 1,
-    title: "Learn Express basics",
-    completed: false
-  },
-  {
-    id: 2,
-    title: "Build my first Task Manager API",
-    completed: false
-  }
-];
+app.use(express.json());
 
 app.get("/", (request, response) => {
   response.send("Task Manager API is running");
 });
 
-app.get("/tasks", (request, response) => {
-  response.json(tasks);
+app.get("/tasks", async (request, response) => {
+  const result = await pool.query("SELECT * FROM tasks ORDER BY id ASC");
+  response.json(result.rows);
 });
 
-app.get("/tasks/:id", (request, response) => {
+app.get("/tasks/:id", async (request, response) => {
   const taskId = Number(request.params.id);
 
-  const task = tasks.find((task) => task.id === taskId);
+  const result = await pool.query(
+    "SELECT * FROM tasks WHERE id = $1",
+    [taskId]
+  );
+
+  const task = result.rows[0];
 
   if (!task) {
     return response.status(404).json({
@@ -40,22 +38,29 @@ app.get("/tasks/:id", (request, response) => {
   response.json(task);
 });
 
-app.post("/tasks", (request, response) => {
-  const newTask = {
-    id: tasks.length + 1,
-    title: request.body.title,
-    completed: false
-  };
+app.post("/tasks", async (request, response) => {
+  const result = await pool.query(
+    "INSERT INTO tasks (title, completed) VALUES ($1, false) RETURNING *",
+    [request.body.title]
+  );
 
-  tasks.push(newTask);
-
-  response.status(201).json(newTask);
+  response.status(201).json(result.rows[0]);
 });
 
-app.put("/tasks/:id", (request, response) => {
+app.put("/tasks/:id", async (request, response) => {
   const taskId = Number(request.params.id);
 
-  const task = tasks.find((task) => task.id === taskId);
+  const result = await pool.query(
+    `UPDATE tasks
+     SET
+       title = COALESCE($1, title),
+       completed = COALESCE($2, completed)
+     WHERE id = $3
+     RETURNING *`,
+    [request.body.title, request.body.completed, taskId]
+  );
+
+  const task = result.rows[0];
 
   if (!task) {
     return response.status(404).json({
@@ -63,28 +68,28 @@ app.put("/tasks/:id", (request, response) => {
     });
   }
 
-  task.title = request.body.title ?? task.title;
-  task.completed = request.body.completed ?? task.completed;
-
   response.json(task);
 });
 
-app.delete("/tasks/:id", (request, response) => {
+app.delete("/tasks/:id", async (request, response) => {
   const taskId = Number(request.params.id);
 
-  const taskIndex = tasks.findIndex((task) => task.id === taskId);
+  const result = await pool.query(
+    "DELETE FROM tasks WHERE id = $1 RETURNING *",
+    [taskId]
+  );
 
-  if (taskIndex === -1) {
+  const task = result.rows[0];
+
+  if (!task) {
     return response.status(404).json({
       error: "Task not found"
     });
   }
-
-  const deletedTask = tasks.splice(taskIndex, 1);
 
   response.json({
     message: "Task deleted",
-    task: deletedTask[0]
+    task: task
   });
 });
 
