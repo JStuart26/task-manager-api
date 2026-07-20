@@ -34,3 +34,13 @@ Delete
 
 ```bash
 npm install
+
+
+## PostgreSQL Database
+
+This project now uses PostgreSQL for persistent task storage.
+
+The API connects to PostgreSQL using the `pg` package and this Docker Compose environment variable:
+
+```text
+DATABASE_URL=postgres://task_user:task_password@db:5432/task_manager
