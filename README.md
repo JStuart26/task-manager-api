@@ -1,4 +1,8 @@
-# Task Manager API
+# Stuart Home Task Manager
+
+Version: 1.0.0
+
+A full-stack task manager built with HTML, CSS, JavaScript, Express, PostgreSQL, and Docker.
 
 This is a beginner Node.js and Express API built as part of my Code Platoon learning lab.
 
