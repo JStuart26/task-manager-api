@@ -25,11 +25,45 @@
       const taskList = document.querySelector("#task-list");
       taskList.innerHTML = "";
 
-      tasks.forEach((task) => {
-        const item = document.createElement("li");
-        item.textContent = `${task.title} - ${task.completed ? "Done" : "Not done"}`;
-        taskList.appendChild(item);
+    tasks.forEach((task) => {
+      const item = document.createElement("li");
+
+      const taskText = document.createElement("span");
+      taskText.textContent = `${task.title} - ${task.completed ? "Done" : "Not done"}`;
+
+     const deleteButton = document.createElement("button");
+     deleteButton.textContent = "Delete";
+
+     deleteButton.addEventListener("click", async () => {
+       await fetch(`${API_URL}/tasks/${task.id}`, {
+         method: "DELETE"
+       });
+
+       loadTasks();
+     });
+
+     const completeButton = document.createElement("button");
+     completeButton.textContent = task.completed ? "Undo" : "Mark Done";
+
+      completeButton.addEventListener("click", async () => {
+        await fetch(`${API_URL}/tasks/${task.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+          completed: !task.completed
+          })
+        });
+
+        loadTasks();
       });
+       
+  item.appendChild(taskText);
+  item.appendChild(completeButton);
+  item.appendChild(deleteButton);
+  taskList.appendChild(item);
+});
     }
 
     const form = document.querySelector("#task-form");
