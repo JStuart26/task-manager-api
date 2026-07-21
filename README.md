@@ -52,3 +52,23 @@ This route checks whether the API is running and whether PostgreSQL is connected
 ```bash
 curl http://localhost:3001/health
 
+## Running the App
+
+Start the backend API and PostgreSQL database:
+
+```bash
+docker compose up -d --build
+
+## Project Structure
+
+task-manager-api/
+├── server.js
+├── compose.yaml
+├── Dockerfile
+├── package.json
+├── db/
+│   └── init.sql
+└── frontend/
+    ├── index.html
+    ├── styles.css
+    └── app.js
