@@ -3,7 +3,12 @@ const API_URL = "http://192.168.1.200:3001";
 async function loadTasks() {
   const response = await fetch(`${API_URL}/tasks`);
   const tasks = await response.json();
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter((task) => task.completed).length;
+  const remainingTasks = totalTasks - completedTasks;
 
+  const taskSummary = document.querySelector("#task-summary");
+  taskSummary.textContent = `Total tasks: ${totalTasks} | Completed: ${completedTasks} | Remaining: ${remainingTasks}`;
   const taskList = document.querySelector("#task-list");
   taskList.innerHTML = "";
 
