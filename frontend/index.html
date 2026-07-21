@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Manager</title>
+</head>
+<body>
+  <h1>Task Manager</h1>
+
+  <form id="task-form">
+    <input id="task-title" type="text" placeholder="New task">
+    <button type="submit">Add Task</button>
+  </form>
+
+  <ul id="task-list"></ul>
+
+  <script>
+    const API_URL = "http://192.168.1.247:3001";
+
+    async function loadTasks() {
+      const response = await fetch(`${API_URL}/tasks`);
+      const tasks = await response.json();
+
+      const taskList = document.querySelector("#task-list");
+      taskList.innerHTML = "";
+
+      tasks.forEach((task) => {
+        const item = document.createElement("li");
+        item.textContent = `${task.title} - ${task.completed ? "Done" : "Not done"}`;
+        taskList.appendChild(item);
+      });
+    }
+
+    const form = document.querySelector("#task-form");
+    const taskTitle = document.querySelector("#task-title");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      await fetch(`${API_URL}/tasks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          title: taskTitle.value
+        })
+      });
+
+      taskTitle.value = "";
+      loadTasks();
+    });
+
+    loadTasks();
+  </script>
+</body>
+</html>

@@ -1,14 +1,16 @@
 const express = require("express");
+const cors = require("cors");
 const { Pool } = require("pg");
 
 const app = express();
 const PORT = 3001;
 
+app.use(cors());
+app.use(express.json());
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL
 });
-
-app.use(express.json());
 
 app.get("/", (request, response) => {
   response.send("Task Manager API is running");
