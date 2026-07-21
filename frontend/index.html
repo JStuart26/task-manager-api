@@ -59,9 +59,33 @@
 
         loadTasks();
       });
-       
+   
+     const editButton = document.createElement("button");
+     editButton.textContent = "Edit";
+
+     editButton.addEventListener("click", async () => {
+       const newTitle = prompt("Edit task title:", task.title);
+
+       if (!newTitle || newTitle.trim() === "") {
+         return;
+       }
+
+       await fetch(`${API_URL}/tasks/${task.id}`, {
+         method: "PUT",
+         headers: {
+           "Content-Type": "application/json"
+         },
+         body: JSON.stringify({
+           title: newTitle
+         })
+       });
+
+       loadTasks();
+     });
+    
   item.appendChild(taskText);
   item.appendChild(completeButton);
+  item.appendChild(editButton);
   item.appendChild(deleteButton);
   taskList.appendChild(item);
 });
