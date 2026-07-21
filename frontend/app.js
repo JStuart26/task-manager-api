@@ -1,4 +1,4 @@
-const API_URL = "http://192.168.1.200:3001";
+const API_URL = `${window.location.protocol}//${window.location.hostname}:3001`;
 
 async function loadTasks() {
   const response = await fetch(`${API_URL}/tasks`);
