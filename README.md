@@ -88,3 +88,6 @@ task-manager-api/
 - Run the full app with Docker Compose
 - Show user-friendly error messages
 - Validate empty task titles in the browser and API
+- Filter tasks by All, Active, and Completed
+- Highlight the selected filter
+- Switch between light and dark mode
