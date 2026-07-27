@@ -76,3 +76,15 @@ task-manager-api/
     ├── index.html
     ├── styles.css
     └── app.js
+
+## Features
+
+- Add tasks
+- Edit task titles
+- Mark tasks complete or incomplete
+- Delete tasks
+- View task summary counts
+- Store tasks in PostgreSQL
+- Run the full app with Docker Compose
+- Show user-friendly error messages
+- Validate empty task titles in the browser and API
