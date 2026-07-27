@@ -47,3 +47,40 @@ li {
 li span {
   flex: 1;
 }
+button.selected {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+body.dark {
+  background: #111827;
+  color: #f9fafb;
+}
+
+body.dark input {
+  background: #1f2937;
+  color: #f9fafb;
+  border-color: #4b5563;
+}
+
+body.dark button {
+  background: #374151;
+  color: #f9fafb;
+  border-color: #6b7280;
+}
+
+body.dark button.selected {
+  background: #60a5fa;
+  color: #111827;
+  border-color: #60a5fa;
+}
+body.dark li {
+  background: #1f2937;
+  color: #f9fafb;
+  border-color: #374151;
+}
+
+body.dark li span {
+  color: #f9fafb;
+}

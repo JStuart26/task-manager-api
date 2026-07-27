@@ -1,6 +1,7 @@
 const API_URL = `${window.location.protocol}//${window.location.hostname}:3001`;
 
 let currentFilter = "all";
+let currentTheme = "light";
 
 function showMessage(text) {
   const message = document.querySelector("#message");
@@ -140,17 +141,35 @@ form.addEventListener("submit", async (event) => {
 });
 document.querySelector("#show-all").addEventListener("click", () => {
   currentFilter = "all";
+  updateFilterButtons();
   loadTasks();
 });
 
 document.querySelector("#show-active").addEventListener("click", () => {
   currentFilter = "active";
+  updateFilterButtons();
   loadTasks();
 });
 
 document.querySelector("#show-completed").addEventListener("click", () => {
   currentFilter = "completed";
+  updateFilterButtons();
   loadTasks();
 });
 
+function updateFilterButtons() {
+  document.querySelector("#show-all").classList.toggle("selected", currentFilter === "all");
+  document.querySelector("#show-active").classList.toggle("selected", currentFilter === "active");
+  document.querySelector("#show-completed").classList.toggle("selected", currentFilter === "completed");
+}
+document.querySelector("#theme-toggle").addEventListener("click", () => {
+  currentTheme = currentTheme === "light" ? "dark" : "light";
+
+  document.body.classList.toggle("dark", currentTheme === "dark");
+
+  document.querySelector("#theme-toggle").textContent =
+    currentTheme === "dark" ? "Light Mode" : "Dark Mode";
+});
+
+updateFilterButtons();
 loadTasks();
