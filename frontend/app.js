@@ -1,7 +1,26 @@
 const API_URL = `${window.location.protocol}//${window.location.hostname}:3001`;
 
+function showMessage(text) {
+  const message = document.querySelector("#message");
+  message.textContent = text;
+}
+
+function clearMessage() {
+  const message = document.querySelector("#message");
+  message.textContent = "";
+}
+
 async function loadTasks() {
-  const response = await fetch(`${API_URL}/tasks`);
+  try {
+    clearMessage();
+
+    const response = await fetch(`${API_URL}/tasks`);
+
+    if (!response.ok) {
+      showMessage("Could not load tasks. Please try again.");
+      return;
+    }
+
   const tasks = await response.json();
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((task) => task.completed).length;
@@ -25,8 +44,6 @@ async function loadTasks() {
       await fetch(`${API_URL}/tasks/${task.id}`, {
         method: "DELETE"
       });
-
-      loadTasks();
     });
 
     const completeButton = document.createElement("button");
@@ -75,6 +92,9 @@ async function loadTasks() {
     item.appendChild(deleteButton);
     taskList.appendChild(item);
   });
+  } catch (error) {
+    showMessage("Could not connect to the task server.");
+  }
 }
 
 const form = document.querySelector("#task-form");
