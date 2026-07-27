@@ -1,5 +1,7 @@
 const API_URL = `${window.location.protocol}//${window.location.hostname}:3001`;
 
+let currentFilter = "all";
+
 function showMessage(text) {
   const message = document.querySelector("#message");
   message.textContent = text;
@@ -31,7 +33,18 @@ async function loadTasks() {
   const taskList = document.querySelector("#task-list");
   taskList.innerHTML = "";
 
-  tasks.forEach((task) => {
+  let visibleTasks = tasks;
+
+   if (currentFilter === "active") {
+     visibleTasks = tasks.filter((task) => !task.completed);
+   }
+
+   if (currentFilter === "completed") {
+     visibleTasks = tasks.filter((task) => task.completed);
+   }
+
+  visibleTasks.forEach((task) => {
+
     const item = document.createElement("li");
 
     const taskText = document.createElement("span");
@@ -123,6 +136,20 @@ form.addEventListener("submit", async (event) => {
   });
 
   taskTitle.value = "";
+  loadTasks();
+});
+document.querySelector("#show-all").addEventListener("click", () => {
+  currentFilter = "all";
+  loadTasks();
+});
+
+document.querySelector("#show-active").addEventListener("click", () => {
+  currentFilter = "active";
+  loadTasks();
+});
+
+document.querySelector("#show-completed").addEventListener("click", () => {
+  currentFilter = "completed";
   loadTasks();
 });
 
