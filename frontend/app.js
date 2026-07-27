@@ -103,13 +103,22 @@ const taskTitle = document.querySelector("#task-title");
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
+  const title = taskTitle.value.trim();
+
+  if (title === "") {
+    showMessage("Please enter a task title.");
+    return;
+  }
+
+  clearMessage();
+
   await fetch(`${API_URL}/tasks`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      title: taskTitle.value
+      title: title
     })
   });
 
